@@ -67,8 +67,7 @@ async function nextPage() {
          message: "We're sorry, but you've reached the end of search results.",
          timeout: 3000,
       });
-      
-   } else {
+    } else {
        try {
           const imagesData = await fetchPictureBySearch(search, perPage, page);
           const searchedGallery = createGallery(imagesData.hits);
@@ -80,11 +79,10 @@ async function nextPage() {
        } finally {
             let elem = document.querySelector(".image-holder");
             let rect = elem.getBoundingClientRect();
-            window.scrollBy(0, rect.height);
+            window.scrollBy(0, rect.height*2);
             loader.classList.add('is-hidden');
          };
-   }
-    
-};
+   }   
+}
 
 
