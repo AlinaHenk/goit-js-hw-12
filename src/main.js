@@ -15,6 +15,7 @@ form.addEventListener("submit", performSearch);
 btnLoad.addEventListener("click", nextPage);
 let search;
 let page;
+let totalPages;
 const perPage = 15;
 let limit;
 
@@ -31,21 +32,24 @@ async function performSearch(event) {
    } else {
       try {
          const imagesData = await fetchPictureBySearch(search, perPage, page);
+         limit = imagesData.totalHits;
+         totalPages = Math.ceil(limit / perPage);
          if (imagesData.total === 0) {
-               iziToast.info({
-                  position: 'topRight',
-                  message: 'Sorry, there are no images matching your search query. Please try again!',
-                  color: 'red',
-                  timeout: 3000,
+            iziToast.info({
+               position: 'topRight',
+               message: 'Sorry, there are no images matching your search query. Please try again!',
+               color: 'red',
+               timeout: 3000,
             });
             event.target.reset();
          } else {
             const searchedGallery = createGallery(imagesData.hits);
-            limit = imagesData.totalHits;
             allImages.innerHTML = searchedGallery;
             let newGallery = new SimpleLightbox('.gallery-list a', { captionsData: 'alt', captionDelay: 250 });
             newGallery.refresh();
-            btnLoad.classList.remove('is-hidden');
+            if (totalPages > 1) {
+               btnLoad.classList.remove('is-hidden');
+            }
          }
       } catch (error) {
                console.log(error);
@@ -59,21 +63,22 @@ async function performSearch(event) {
 async function nextPage() {
     page += 1;
     const totalPages = Math.ceil(limit / perPage);
-    if (page > totalPages) {
-      btnLoad.classList.add('is-hidden');
-      return iziToast.info({
-         position: "topRight",
-         message: "We're sorry, but you've reached the end of search results.",
-         timeout: 3000,
-      });
-    } else {
-       try {
+   try {
           const imagesData = await fetchPictureBySearch(search, perPage, page);
           const searchedGallery = createGallery(imagesData.hits);
           allImages.insertAdjacentHTML("beforeend", searchedGallery);
           let newGallery = new SimpleLightbox('.gallery-list a', { captionsData: 'alt', captionDelay: 250 });
           newGallery.refresh();
-       } catch (error) {
+       
+      if (page === totalPages) {
+         btnLoad.classList.add('is-hidden');
+         return iziToast.info({
+            position: "topRight",
+            message: "We're sorry, but you've reached the end of search results.",
+            timeout: 3000,
+         });
+      }
+    } catch (error) {
           console.log(error);
        } finally {
             let elem = document.querySelector(".image-holder");
@@ -82,6 +87,5 @@ async function nextPage() {
             loader.classList.add('is-hidden');
          };
    }   
-}
 
 
