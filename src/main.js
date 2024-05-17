@@ -6,7 +6,6 @@ import "simplelightbox/dist/simple-lightbox.min.css";
 import { fetchPictureBySearch } from "./js/pixabay-api.js";
 import { createGallery } from "./js/render-functions.js";
 
-
 const inputForm = document.querySelector('input[name="search"]');
 const allImages = document.querySelector('.gallery-list');
 const form = document.querySelector('.form-image-search');
