@@ -47,8 +47,16 @@ async function performSearch(event) {
             allImages.innerHTML = searchedGallery;
             let newGallery = new SimpleLightbox('.gallery-list a', { captionsData: 'alt', captionDelay: 250 });
             newGallery.refresh();
+   
             if (totalPages > 1) {
                btnLoad.classList.remove('is-hidden');
+            }
+            if (totalPages === 1) {
+            return iziToast.info({
+            position: "topRight",
+            message: "We're sorry, but you've reached the end of search results.",
+            timeout: 3000,
+         });
             }
          }
       } catch (error) {
